@@ -1,25 +1,44 @@
 const cheerio = require('cheerio');
-const url = require('url');
 const fetchUrl = require('fetch').fetchUrl;
-const fs = require('fs');
+const url = require('url');
+
 const saver = require('./saver');
 const package = require('./package.json')
 
 let config = {
 	siteroot: 'https://ig.ft.com/us-elections/',
-	outdir: 'out',
-	initialPages: [
+	out: 'out',
+	initial: [
 		{resource: 'https://ig.ft.com/us-elections/', type:'href'},
 		{resource: 'https://ig.ft.com/us-elections/polls', type:'href'},
 		{resource: 'https://ig.ft.com/us-elections/results', type:'href'},
 		{resource: 'https://ig.ft.com/us-elections/full-result.json', type:'script'} ],
 };
 
+const args = require('minimist')(process.argv.slice(2));
+
+if(Object.keys(args).length == 1 || args.h || args.help) usage();
+
+if(args.initial) args.initial = args.initial.split(',').map(d=> {
+	return { resource:d, type:'href' }; })
+
+
+config = Object.assign(config, args);
+
+console.dir(config);
+
 config.altsiteroot = config.siteroot.split('https:')[1];
 
 console.log('FREEZER ' + package.version);
 console.log(config);
 console.log('--');
+
+const spideredSet = urlSet();
+config.initial.forEach(function(d){
+	spideredSet.add(d.resource, d.type);
+});
+spiderURL( spideredSet.getUnvisited() );
+
 
 function urlSet(){
 	const set = {};
@@ -54,13 +73,6 @@ function urlSet(){
 
 	return list;
 }
-
-const spideredSet = urlSet();
-config.initialPages.forEach(function(d){
-	spideredSet.add(d.resource, d.type);
-});
-
-spiderURL( spideredSet.getUnvisited() );
 
 function spiderURL(spiderableURL){
 	if(!spiderableURL){
@@ -100,7 +112,7 @@ function decodeImageService(imageURL){
 }
 
 function getURLs(page, spiderableURL){
-	console.log('spidering ', spiderableURL);
+	console.log('\t...spidering ');
 
 	const $ = cheerio.load(page);
 
@@ -140,7 +152,18 @@ function getURLs(page, spiderableURL){
 	if( nextURL ){
 		spiderURL(nextURL)
 	}else{
-		saver( Object.keys(spideredSet()), config.siteroot, config.outdir, rewrite=true )
+		saver( Object.keys(spideredSet()), config.siteroot, config.out, rewrite=true )
 		console.log('DONE');
 	};
+}
+
+function usage(){
+	const switches = 
+	'\n--siteroot [STRING] \n\tspecify the root of the site\n\teg --siteroot https://ig.ft.com/us-elections/'
+	+ 
+	'\n--initial [STRING] \n\ta comma separated list of urls from which to start the spidering \n\teg --initial https://ig.ft.com/us-elections/polls,https://ig.ft.com/us-elections/results'
+	+
+	'\n--out [STRING] \n\tthe output directory (relative to the current location) \n\t--output us-elections-2016';
+	console.log(switches);
+	process.exit(0);
 }
