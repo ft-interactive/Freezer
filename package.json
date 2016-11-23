@@ -1,0 +1,18 @@
+{
+  "name": "freezer",
+  "version": "1.0.0",
+  "description": "archive dynamic IG sites as a bunch of static files",
+  "main": "freezer.js",
+  "scripts": {
+    "start": "node freezer.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^0.22.0",
+    "fetch": "^1.1.0",
+    "fs-extra": "^1.0.0",
+    "minimist": "^1.2.0"
+  }
+}
