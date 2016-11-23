@@ -1,4 +1,4 @@
-# Freezer
+# ❄️ Freezer ❄️
 
 A little script for making an archive of a site. Specifically aimed at ig sites running on some dynamic back end (e.g. heroku)
 
