@@ -15,11 +15,11 @@ Freezer understands (v2 origami image service)[https://www.ft.com/__origami/serv
  0. You'll need node
  1. Clone this repository 
  2. `npm install`
- 3. To archive a site run the script with the follwing arguments
- *	`--siteroot` the root URL of the site
- *  `--out` the local directory to which files will be written
- *  `--initial` you can add aditional links to spider if they are not accesible from the root of your site.
- * 	`--rewrite` create an .htaccess file to redirect urls without extensions to .html files
+ 3. To archive a site run the script with the following arguments
+   *  `--siteroot` the root URL of the site
+   *  `--out` the local directory to which files will be written
+   *  `--initial` you can add aditional links to spider if they are not accesible from the root of your site.
+   *  `--rewrite` create an .htaccess file to redirect urls without extensions to .html files
 
 example: 
 ```
