@@ -26,11 +26,12 @@ if(args.initial) args.initial = args.initial.split(',').map(d=> {
 
 
 config = Object.assign(config, args);
-
+if(String(config.rewrite).toLowerCase() === "false") config.rewrite = false;
 console.log('FREEZER ' + package.version);
 console.log(config);
 
 const spideredSet = urlSet();
+spideredSet.add(config.root, 'href');
 config.initial.forEach(function(d){
 	spideredSet.add(d.resource, d.type);
 });
