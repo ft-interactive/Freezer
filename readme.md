@@ -4,7 +4,7 @@ A little script for making an archive of a site. Specifically aimed at ig sites 
 
 Given some URLs to start from /Freezer/ will spider a site and download all assets and pages it finds bellow a root URL. 
 
-## Appache rewrites
+## Apache rewrites
 HTML pages without extensions will be given an HTML extension and an .htaccess file will be created by default to deal with redirecting to the appropriate resource e.g. 'https://ig.ft.com/us-elections/nevada-polls' would be saved as 'nevada-polls.html' and the redirect would then deal with responding to requests for 'nevada-polls' correctly.
 The site root will be saved as `index.html`
 
