@@ -9,7 +9,7 @@ HTML pages without extensions will be given an HTML extension and an .htaccess f
 The site root will be saved as `index.html`
 
 ## Image service URLs
-Freezer understands (v2 origami image service)[https://www.ft.com/__origami/service/image/v2] URLS and if the source image is under the root it will save that
+Freezer understands [v2 origami image service](https://www.ft.com/__origami/service/image/v2) URLS and if the source image is under the root it will save that
 
 ## Usage
  0. You'll need node
