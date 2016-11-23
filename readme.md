@@ -25,7 +25,14 @@ example:
 ```
 node freezer.js --siteroot https://ig.ft.com/us-elections/ --initial https://ig.ft.com/us-elections/polls,https://ig.ft.com/us-elections/results,https://ig.ft.com/us-elections/full-results.json --out us-election-2016
 ```
+## Also
+
+Freezer proiduces a manifest in the form of a `readme.md` file in the output directory so you can check what files have been saves, from where etc.
 
 ## Then what?
 
 The idea is that the static files generated on you local machine can be FTPd up to a directory on our webserver in a place which corresponds to the path structure of the dynamic app.
+
+## Next...
+
+Maybe, optionally, some kind of 'this site was archived on YYYY/MM/DD' banner could be added via a little javascript added to any HTML pages.
