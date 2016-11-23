@@ -25,3 +25,7 @@ example:
 ```
 node freezer.js --siteroot https://ig.ft.com/us-elections/ --initial https://ig.ft.com/us-elections/polls,https://ig.ft.com/us-elections/results,https://ig.ft.com/us-elections/full-results.json --out us-election-2016
 ```
+
+## Then what?
+
+The idea is that the static files generated on you local machine can be FTPd up to a directory on our webserver in a place which corresponds to the path structure of the dynamic app.
