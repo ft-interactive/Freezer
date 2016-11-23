@@ -5,9 +5,11 @@ const url = require('url');
 const saver = require('./saver');
 const package = require('./package.json')
 
+//defaults
 let config = {
 	siteroot: 'https://ig.ft.com/us-elections/',
 	out: 'out',
+	rewrite: true,
 	initial: [
 		{resource: 'https://ig.ft.com/us-elections/', type:'href'},
 		{resource: 'https://ig.ft.com/us-elections/polls', type:'href'},
@@ -25,19 +27,15 @@ if(args.initial) args.initial = args.initial.split(',').map(d=> {
 
 config = Object.assign(config, args);
 
-console.dir(config);
-
-config.altsiteroot = config.siteroot.split('https:')[1];
-
 console.log('FREEZER ' + package.version);
 console.log(config);
-console.log('--');
 
 const spideredSet = urlSet();
 config.initial.forEach(function(d){
 	spideredSet.add(d.resource, d.type);
 });
 spiderURL( spideredSet.getUnvisited() );
+
 
 
 function urlSet(){
@@ -82,27 +80,28 @@ function spiderURL(spiderableURL){
 	console.log('fetching', spiderableURL)
 	fetchUrl(spiderableURL, function(error, meta, body){
 		if (!error) {
-	    	getURLs( body.toString(), spiderableURL );
+	    	getURLs( body.toString(), spiderableURL ,config );
 		}else{
 			console.log('error', error, spiderableURL);
 		}
 	});
 }
-
-function toFollow(testURL){
-	//further URLs which we're interested in or not.
-	// nothing starting with a # 
-	// nothing starting with 'http' or 'https' that doesn;t then immediately match the siteroot
-	// everything else please
-	if(!testURL.indexOf) return false;
-	if(testURL.indexOf('#') === 0) return false;
-	const isAbsoluteLink = (testURL.indexOf('http')===0 || testURL.indexOf('https')===0 || testURL.indexOf('//')===0)
-	const isRoot = (testURL.indexOf(config.siteroot) === 0 || testURL.indexOf(config.altsiteroot) === 0)
-	if(isAbsoluteLink && !isRoot) return false;
-	if(isRoot) return testURL;
-	return url.resolve(config.siteroot, testURL); 
+function followChecker(root){
+	const altroot = root.split('https:')[1];
+	return function toFollow(testURL){
+		//further URLs which we're interested in or not.
+		// nothing starting with a # 
+		// nothing starting with 'http' or 'https' that doesn;t then immediately match the siteroot
+		// everything else please
+		if(!testURL.indexOf) return false;
+		if(testURL.indexOf('#') === 0) return false;
+		const isAbsoluteLink = (testURL.indexOf('http')===0 || testURL.indexOf('https')===0 || testURL.indexOf('//')===0)
+		const isRoot = (testURL.indexOf(root) === 0 || testURL.indexOf(altroot) === 0)
+		if(isAbsoluteLink && !isRoot) return false;
+		if(isRoot) return testURL;
+		return url.resolve(root, testURL); 
+	}
 }
-
 function decodeImageService(imageURL){
 	const fragments = imageURL.split('https://www.ft.com/__origami/service/image/v2/images/raw/');
 	if(fragments.length > 1){
@@ -111,10 +110,10 @@ function decodeImageService(imageURL){
 	return imageURL;
 }
 
-function getURLs(page, spiderableURL){
+function getURLs(page, spiderableURL, conf){
 	console.log('\t...spidering ');
-
 	const $ = cheerio.load(page);
+	const toFollow = followChecker(conf.siteroot);
 
 	$('a').each((i, d) => {
 		const testURL = cheerio(d).attr('href');	
@@ -152,7 +151,7 @@ function getURLs(page, spiderableURL){
 	if( nextURL ){
 		spiderURL(nextURL)
 	}else{
-		saver( Object.keys(spideredSet()), config.siteroot, config.out, rewrite=true )
+		saver( Object.keys(spideredSet()), conf.siteroot, conf.out, rewrite=conf.rewrite )
 		console.log('DONE');
 	};
 }
@@ -163,7 +162,9 @@ function usage(){
 	+ 
 	'\n--initial [STRING] \n\ta comma separated list of urls from which to start the spidering \n\teg --initial https://ig.ft.com/us-elections/polls,https://ig.ft.com/us-elections/results'
 	+
-	'\n--out [STRING] \n\tthe output directory (relative to the current location) \n\t--output us-elections-2016';
+	'\n--out [STRING] \n\tthe output directory (relative to the current location) \n\t--output us-elections-2016'
+	+
+	'\n--rewrite [true|false] \n\tshould the script create an .htaccess file to rewrite pages without extensions to .html (defaults to true) \n\teg --rewrite false';
 	console.log(switches);
 	process.exit(0);
 }
