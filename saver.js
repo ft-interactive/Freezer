@@ -5,6 +5,7 @@ const rewriteRule = "RewriteEngine On\nRewriteCond %{REQUEST_FILENAME} !-f\nRewr
 
 function saveFileList(list, root, outdir, rewrite){
 	 list.forEach(d=>{
+	 		console.log(d.split(root));
 			const relativeFilePath = d.split(root)[1].split('/');
 			if(relativeFilePath[0] == ''){
 				relativeFilePath[0] = 'index.html';

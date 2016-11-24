@@ -22,8 +22,18 @@ Freezer understands [v2 origami image service](https://www.ft.com/__origami/serv
 
 example: 
 ```
-node freezer.js --siteroot https://ig.ft.com/us-elections/ --initial https://ig.ft.com/us-elections/polls,https://ig.ft.com/us-elections/results,https://ig.ft.com/us-elections/full-results.json --out us-election-2016
+node freezer.js --siteroot https://ig.ft.com/us-elections/ --initial https://ig.ft.com/us-elections/polls,https://ig.ft.com/us-elections/results,https://ig.ft.com/us-elections/full-results.json --out us-elections-2016
 ```
+another example (not working):
+```
+node freezer.js --siteroot http://elections.ft.com/ --initial http://elections.ft.com/uk/2015/projections,http://elections.ft.com/uk/2015/coalition-calculator,http://elections.ft.com/uk/2015/results --out uk-election-2015
+```
+another example
+```
+node freezer.js --siteroot https://ig.ft.com/sites/brexit-polling/ --out brexit-polling
+```
+
+
 ## Also
 
 Freezer proiduces a manifest in the form of a `readme.md` file in the output directory so you can check what files have been saves, from where etc.

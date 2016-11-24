@@ -7,14 +7,10 @@ const package = require('./package.json')
 
 //defaults
 let config = {
-	siteroot: 'https://ig.ft.com/us-elections/',
+	siteroot: '',
 	out: 'out',
 	rewrite: true,
-	initial: [
-		{resource: 'https://ig.ft.com/us-elections/', type:'href'},
-		{resource: 'https://ig.ft.com/us-elections/polls', type:'href'},
-		{resource: 'https://ig.ft.com/us-elections/results', type:'href'},
-		{resource: 'https://ig.ft.com/us-elections/full-result.json', type:'script'} ],
+	initial: [],
 };
 
 const args = require('minimist')(process.argv.slice(2));
@@ -27,6 +23,7 @@ if(args.initial) args.initial = args.initial.split(',').map(d=> {
 
 config = Object.assign(config, args);
 if(String(config.rewrite).toLowerCase() === "false") config.rewrite = false;
+if(config.initial.length==0) config.initial.push({ resource:config.siteroot, type:'href' });
 console.log('FREEZER ' + package.version);
 console.log(config);
 
@@ -74,11 +71,12 @@ function urlSet(){
 }
 
 function spiderURL(spiderableURL){
+	console.log(spiderableURL)
 	if(!spiderableURL){
 		console.log(' :( ', spiderableURL);
 		return;
 	}
-	console.log('fetching', spiderableURL)
+	console.log('\t...fetching')
 	fetchUrl(spiderableURL, function(error, meta, body){
 		if (!error) {
 	    	getURLs( body.toString(), spiderableURL ,config );
